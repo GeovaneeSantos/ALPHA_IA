@@ -1,4 +1,3 @@
-
 import express from 'express';
 import sqlite3 from 'sqlite3';
 import { open } from 'sqlite';
@@ -77,9 +76,9 @@ app.post('/registro', async (req, res) => {
 app.post('/login', async (req, res) => {
 
     // O cliente envia 'nome' (usuário) e 'sobrenome' (senha)
-    const { nome, senha } = req.body; 
+    const { email, senha } = req.body; 
 
-    if (!nome || !senha) {
+    if (!email || !senha) {
         return res.status(400).json({ success: false, error: 'Usuário e senha são obrigatórios.' });
     }
 
@@ -88,12 +87,11 @@ app.post('/login', async (req, res) => {
 
         //Busca o usuário digitado no bd na tabela USUARIOS
         const user = await db.get(
-            `SELECT id, nome, ra, email FROM USUARIOS WHERE nome = ? AND senha = ?`, 
-            [nome, senha]
+            `SELECT id, nome, ra, email FROM USUARIOS WHERE email = ? AND senha = ?`, 
+            [email, senha]
         );
 
         if (user) {
-
             // Se o usuario existir user vira true Credenciais corretas
             return res.json({ success: true, message: 'Login bem-sucedido!' });
         } else {

@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 
 <head>
@@ -37,7 +37,8 @@
 
       <div class="cta">
         <h3>Envie uma imagem e veja a IA em ação.</h3>
-        <button class="upload-large">Upload</button>
+        <button class="upload-large" id="btnUpload">Upload</button>
+        <input type="file" id="inputArquivo" accept="image/*" style="display: none;">
       </div>
     </section>
 
@@ -45,11 +46,48 @@
       <img src="img/logo2.png" alt="Logo AlphaIA" class="hero-logo">
     </aside>
   </main>
-    <script>
-      function mudarDeTela() {
-        window.location.href = "login.html";
+  <script>
+    function mudarDeTela() {
+      window.location.href = "login.html";
+    }
+    // --- Script para o Upload ---
+
+    // 1. Pega os elementos pelo ID
+    const botaoUpload = document.getElementById('btnUpload');
+    const inputArquivo = document.getElementById('inputArquivo');
+
+    // 2. Quando o USUÁRIO clicar no BOTÃO...
+    botaoUpload.addEventListener('click', () => {
+      // ...simule um clique no INPUT escondido
+      inputArquivo.click();
+    });
+
+    // 3. Quando o USUÁRIO selecionar um arquivo no INPUT...
+    inputArquivo.addEventListener('change', (event) => {
+      // 'event.target.files' é uma lista de arquivos. Pegamos o primeiro (índice 0)
+      const arquivo = event.target.files[0];
+
+      if (arquivo) {
+        console.log('Arquivo selecionado:', arquivo.name);
+        const formData = new FormData();
+
+        formData.append('imagem_ia', arquivo);
+
+
+        fetch('http://localhost:3000/processar-imagem', { 
+          method: 'POST',
+          body: formData
+        })
+          .then(response => response.json())
+          .then(data => {
+            console.log('Resposta do servidor:', data);
+          })
+          .catch(error => {
+            console.error('Erro ao enviar imagem:', error);
+          });
       }
-    </script>
+    });
+  </script>
   <footer>
     AlphaIA © 2025. Todos os Direitos reservados.
   </footer>

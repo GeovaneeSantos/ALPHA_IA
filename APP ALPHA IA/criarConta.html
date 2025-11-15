@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AlphaIA - Criar Conta</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <div class="container">
+    <div class="form-section">
+      <h1 class="logo-text">Alpha<span>IA</span></h1>
+      <h2>Criar uma conta</h2>
+
+      <form id="registroForm">
+        <input type="email" placeholder="Email" required id="email">
+        <input type="text" placeholder="RA" id="ra">
+        <input type="text" placeholder="Nome de usuário" id="nome">
+        <input type="password" placeholder="Senha" required id="senha">
+        <input type="password" placeholder="Confirmar Senha" required>
+        <button type="submit">Confirmar</button>
+        <button type="submit" onclick="mudarDeTela()">Retornar ao Login</button>
+      </form>
+      <p id="mensagem-status" class=""></p>
+    </div>
+
+    <div class="logo-section">
+      <img src="img/logo2.png" alt="Logo AlphaIA">
+    </div>
+  </div>
+  <script>
+    function mudarDeTela() {
+      window.location.href = "login.html";
+    }
+    const SERVER_URL = 'http://localhost:3000/registro';
+    const registroForm = document.getElementById('registroForm');
+    const mensagemStatus = document.getElementById('mensagem-status');
+
+    registroForm.addEventListener('submit', async function (e) {
+      e.preventDefault();
+
+      mensagemStatus.textContent = "Tentando registrar...";
+      mensagemStatus.className = 'mt-3 text-center small text-info';
+
+      const nome = document.getElementById('nome').value;
+      const ra = parseInt(document.getElementById('ra').value);
+      const senha = document.getElementById('senha').value;
+      const email = document.getElementById('email').value;
+
+      const dadosParaEnviar = { nome, ra, senha, email };
+
+      try {
+        const response = await fetch(SERVER_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(dadosParaEnviar)
+        });
+
+        const result = await response.json();
+
+        if (response.ok || response.status === 201) {
+          mensagemStatus.textContent = `Registro bem-sucedido! Redirecionando para o login...`;
+
+          // Redireciona para a tela de login
+          setTimeout(() => {
+            window.location.href = 'login.html';
+          }, 1500);
+
+        } else {
+          // Erro: Nome, RA ou Email já existem (409) ou outro erro de validação (400)
+          mensagemStatus.textContent = `Erro: ${result.error || 'Falha no registro.'}`;
+        }
+
+      } catch (error) {
+        console.error('Erro de conexão:', error);
+        mensagemStatus.textContent = 'ERRO: Não foi possível conectar ao servidor (Verifique se o Node.js está rodando).';
+      }
+    });
+
+  </script>
+  <footer>
+    AlphaIA © 2025. Todos os Direitos reservados.
+  </footer>
+</body>
+
+</html>
