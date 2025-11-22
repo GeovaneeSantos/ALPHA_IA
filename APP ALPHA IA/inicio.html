@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>AlphaIA — Home</title>
+
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <header class="topbar">
+    <div class="topbar-left">
+      <div class="brand">Alpha<span>IA</span></div>
+    </div>
+
+    <div class="topbar-right">
+      <button class="btn-ghost" onclick="mudarDeTela()">Login</button>
+      <button class="btn-primary">Upload</button>
+    </div>
+  </header>
+
+  <main class="hero">
+    <section class="hero-left">
+      <h1 class="hero-title">Alpha IA</h1>
+
+      <div class="hero-text">
+        <p>A AlphaIA desenvolve uma inteligência artificial inovadora, capaz de reconhecer objetos eletrônicos a partir
+          de fotos tiradas no momento ou enviadas por upload.</p>
+
+        <p>Voltada para fins educacionais, de entretenimento e aplicações industriais, a tecnologia identifica os itens
+          de forma rápida, intuitiva e sem a necessidade de informar marca ou modelo.</p>
+
+        <p>Uma solução simples, prática e eficiente para quem busca automação com inteligência.</p>
+      </div>
+
+      <div class="cta">
+        <h3>Envie uma imagem e veja a IA em ação.</h3>
+        <button class="upload-large" id="btnUpload">Upload</button>
+        <input type="file" id="inputArquivo" accept="image/*" style="display: none;">
+      </div>
+    </section>
+
+    <aside class="hero-right" aria-hidden="true">
+      <img src="img/logo2.png" alt="Logo AlphaIA" class="hero-logo">
+    </aside>
+  </main>
+  <script>
+    function mudarDeTela() {
+      window.location.href = "login.html";
+    }
+    // --- Script para o Upload ---
+
+    // 1. Pega os elementos pelo ID
+    const botaoUpload = document.getElementById('btnUpload');
+    const inputArquivo = document.getElementById('inputArquivo');
+
+    // 2. Quando o USUÁRIO clicar no BOTÃO...
+    botaoUpload.addEventListener('click', () => {
+      // ...simule um clique no INPUT escondido
+      inputArquivo.click();
+    });
+
+    // 3. Quando o USUÁRIO selecionar um arquivo no INPUT...
+    inputArquivo.addEventListener('change', (event) => {
+      // 'event.target.files' é uma lista de arquivos. Pegamos o primeiro (índice 0)
+      const arquivo = event.target.files[0];
+
+      if (arquivo) {
+        console.log('Arquivo selecionado:', arquivo.name);
+        const formData = new FormData();
+
+        formData.append('imagem_ia', arquivo);
+
+
+        fetch('http://localhost:3000/processar-imagem', { 
+          method: 'POST',
+          body: formData
+        })
+          .then(response => response.json())
+          .then(data => {
+            console.log('Resposta do servidor:', data);
+          })
+          .catch(error => {
+            console.error('Erro ao enviar imagem:', error);
+          });
+      }
+    });
+  </script>
+  <footer>
+    AlphaIA © 2025. Todos os Direitos reservados.
+  </footer>
+</body>
+
+</html>
