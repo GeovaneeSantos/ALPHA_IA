@@ -32,6 +32,7 @@
 ::
 ::978f952a14a936cc963da21a135fa983
 @echo off
+start cmd /K teste.bat
 ECHO ===========================================
 ECHO   INICIANDO SERVIDOR NODE.JS (server.js)
 ECHO ===========================================
