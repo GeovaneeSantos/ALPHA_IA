@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AlphaIA - Login</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <div class="container">
+    <div class="form-section">
+      <h1 class="logo-text">Alpha<span>IA</span></h1>
+      <h2>Login</h2>
+
+      <form id="loginForm">
+        <input type="email" placeholder="Email" id="usuario" required>
+        <input type="password" placeholder="Senha" id="senha" required>
+        <button type="submit">Entrar</button>
+        <button type="submit" onclick=mudarDeTela()>Registrar-se</button>
+      </form>
+      <p id="mensagem-status" class=""></p>
+    </div>
+
+    <div class="logo-section">
+      <img src="img/logo2.png" alt="Logo AlphaIA">
+    </div>
+  </div>
+  <script>
+    function mudarDeTela() {
+      window.location.href = "criarConta.html";
+    }
+    const SERVER_URL = 'http://localhost:3000/login';
+
+    const loginForm = document.getElementById('loginForm');
+    const mensagemStatus = document.getElementById('mensagem-status');
+
+    loginForm.addEventListener('submit', async function (e) {
+      e.preventDefault();
+
+      mensagemStatus.textContent = "Tentando validar no servidor...";
+
+      const email = document.getElementById('usuario').value;
+      const senha = document.getElementById('senha').value;
+
+      const dadosParaEnviar = {
+        email: email,
+        senha: senha
+      };
+
+      try {
+        const response = await fetch(SERVER_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(dadosParaEnviar)
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+          mensagemStatus.textContent = `Login bem-sucedido! Redirecionando...`;
+
+          setTimeout(() => {
+            window.location.href = 'inicio.html';
+          }, 1500); 
+
+        } else {
+          mensagemStatus.textContent = `Erro: ${result.error || 'Credenciais inválidas ou falha de comunicação.'}`;
+        }
+
+      } catch (error) {
+        console.error('Erro de conexão:', error);
+        mensagemStatus.textContent = 'ERRO: Não foi possível conectar ao servidor (Verifique se o Node.js está rodando).';
+      }
+    });
+  </script>
+  <footer>
+    AlphaIA © 2025. Todos os Direitos reservados.
+  </footer>
+</body>
+
+</html>

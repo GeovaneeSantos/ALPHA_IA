@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>AlphaIA — Home</title>
+
+  <link rel="stylesheet" href="style.css">
+
+  <style>
+
+  </style>
+</head>
+
+<body>
+  <header class="topbar">
+    <div class="topbar-left">
+      <div class="brand">Alpha<span>IA</span></div>
+    </div>
+
+    <div class="topbar-right">
+      <button class="btn-primary" onclick="window.location.href = 'https://github.com/GeovaneeSantos/ALPHA_IA'";">Acesse
+        o GitHub</button>
+    </div>
+  </header>
+
+  <main class="hero">
+    <section class="hero-left">
+      <h1 class="hero-title">Alpha IA</h1>
+
+      <div class="hero-text">
+        <p>A AlphaIA desenvolveu uma inteligência artificial inovadora, capaz de reconhecer objetos eletrônicos a partir
+          de fotos enviadas por upload.</p>
+
+        <p>Voltada para fins educacionais, de entretenimento e aplicações industriais, a tecnologia identifica os itens
+          de forma rápida, intuitiva e sem a necessidade de informar marca ou modelo.</p>
+
+        <p>Uma solução simples, prática e eficiente para quem busca automação com inteligência.</p>
+        <p>Além do mais essa IA é totalmente autoral, sendo treinada com um banco de cerca de 10.000 imagens e uma rede neural arquitetada com PyThorch</p>
+      </div>
+
+      <div class="cta">
+        <h3>Envie uma imagem e veja a IA em ação.</h3>
+        <button class="upload-large" id="btnUpload">Upload</button>
+        <input type="file" id="inputArquivo" accept="image/*" style="display: none;">
+      </div>
+    </section>
+
+    <aside class="hero-right" aria-hidden="true">
+      <img src="img/logo2.png" alt="Logo AlphaIA" class="hero-logo">
+    </aside>
+  </main>
+
+  <div id="meuModal" class="modal-overlay">
+    <div class="modal-content">
+      <span class="close-btn">&times;</span>
+      <h2 class="modal-titulo" id="modalTitulo">Resultado</h2>
+      <p class="modal-resultado" id="modalTexto">Carregando...</p>
+      <button class="btn-ok" id="btnOk">OK</button>
+    </div>
+  </div>
+
+  <footer>
+    AlphaIA © 2025. Todos os Direitos reservados.
+  </footer>
+
+  <script>
+    function mudarDeTela() {
+      window.location.href = "login.html";
+    }
+
+    const botaoUpload = document.getElementById('btnUpload');
+    const inputArquivo = document.getElementById('inputArquivo');
+
+
+    const modal = document.getElementById("meuModal");
+    const spanClose = document.getElementsByClassName("close-btn")[0];
+    const btnOk = document.getElementById("btnOk");
+    const modalTexto = document.getElementById("modalTexto");
+    const modalTitulo = document.getElementById("modalTitulo");
+
+    function abrirModal(titulo, texto) {
+      modalTitulo.innerText = titulo;
+      modalTexto.innerText = texto;
+      modal.style.display = "block";
+    }
+
+    function fecharModal() {
+      modal.style.display = "none";
+      inputArquivo.value = "";
+    }
+    spanClose.onclick = fecharModal;
+    btnOk.onclick = fecharModal;
+
+    window.onclick = function (event) {
+      if (event.target == modal) {
+        fecharModal();
+      }
+    }
+    botaoUpload.addEventListener('click', () => {
+      inputArquivo.click();
+    });
+
+    inputArquivo.addEventListener('change', (event) => {
+      const arquivo = event.target.files[0];
+
+      if (arquivo) {
+        abrirModal("Processando...", "Aguarde um momento.");
+
+        const formData = new FormData();
+        formData.append('imagem', arquivo);
+
+        fetch('http://localhost:3000/classificar-ia', {
+            method: 'POST',
+            body: formData
+          })
+          .then(async response => {
+
+            const data = await response.json();
+
+            if (!response.ok) {
+              throw new Error(data.error || `Erro HTTP: ${response.status}`);
+            }
+
+
+            return data;
+          })
+          .then(data => {
+            console.log('Resposta do servidor:', data);
+
+            if (data.success && data.classe_predita) {
+              abrirModal("A IA Identificou:", data.classe_predita);
+              modalTexto.style.color = "initial";
+            } else {
+
+              abrirModal("Erro na Resposta", data.error || "O servidor não retornou a classe predita.");
+              modalTexto.style.color = "red";
+            }
+          })
+          .catch(error => {
+
+            console.error('Erro ao enviar imagem:', error);
+            abrirModal("Erro de Conexão", error.message || "Não foi possível conectar ao servidor.");
+            modalTexto.style.color = "red";
+          });
+      }
+    });
+  </script>
+</body>
+
+</html>
