@@ -28,7 +28,8 @@ As seguintes ferramentas e frameworks foram usadas na construção do projeto:
 | Ferramenta | Descrição |
 | :--- | :--- |
 | **Node.js** | Ambiente de execução JavaScript. |
-| **Express** | Framework web para o backend. |
+| **Express** | Framework web para o backend JavaScript. |
+| **Flask** | Framework web para o backend python. |
 | **HTML5 / CSS3** | Estrutura e estilização da interface. |
 | **SQLite** | Banco de dados para armazenamento local (`bancoSite.db`). |
 
@@ -38,7 +39,7 @@ Para executar este projeto localmente, siga os passos abaixo:
 
 ### Pré-requisitos
 
-Certifique-se de ter o **Node.js** e o **npm** (gerenciador de pacotes do Node) instalados em sua máquina.
+Certifique-se de ter o **Node.js**, **Python 311** e o **npm** (gerenciador de pacotes do Node) instalados em sua máquina.
 
 ### Instalação
 
@@ -48,7 +49,7 @@ Certifique-se de ter o **Node.js** e o **npm** (gerenciador de pacotes do Node) 
   ```
 2. **Entre na pasta do projeto:**
   ```bash
-  cd ALPHA_IA
+  cd 2.0
   ```
 3. **Instale as dependências:**
   ```bash
@@ -60,7 +61,7 @@ Certifique-se de ter o **Node.js** e o **npm** (gerenciador de pacotes do Node) 
 1. **Inicie o servidor:**
 
   ```bash
-  node server.js
+  node server.cjs
   ```
 
 2. **Acesse a aplicação:**
